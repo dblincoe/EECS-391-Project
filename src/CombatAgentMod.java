@@ -1,2 +1,3 @@
-public class CombatAgentMod {
+public class CombatAgentMod
+{
 }
