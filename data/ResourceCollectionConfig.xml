@@ -7,7 +7,6 @@
 			<Argument>2000</Argument>
 		</AgentClass>
 	</Player>
-	<!--
 	<Player Id="0">
 		<AgentClass>
 			<ClassName>edu.cwru.sepia.agent.visual.VisualAgent</ClassName>
@@ -15,7 +14,6 @@
 			<Argument>false</Argument>
 		</AgentClass>
 	</Player>
-	-->
 	<ModelParameters>
 		<Conquest>false</Conquest>
 		<Midas>true</Midas>
@@ -29,11 +27,11 @@
 		<Parameter Name="experiment.NumEpisodes" Value="10"/>
 		<Parameter Name="experiment.EpisodesPerSave" Value="1"/>
 		<Parameter Name="experiment.SaveAgents" Value="false"/>
-		<Parameter Name="experiment.episodesperagentsave" Value="4" />
-		<Parameter Name="experiment.episodesperreplaysave" Value="4" />
-		<Parameter Name="experiment.save.replaydirectory" Value="saves/test1" />
-		<Parameter Name="experiment.save.agentdirectory" Value="saves/test1" />
-		<Parameter Name="experiment.temp.thing" Value="saves/test1" />
-		<Parameter Name="environment.model.class" Value="edu.cwru.sepia.environment.model.BestEffortModel" />
+        <Parameter Name="experiment.episodesperagentsave" Value="4"/>
+        <Parameter Name="experiment.episodesperreplaysave" Value="4"/>
+        <Parameter Name="experiment.save.replaydirectory" Value="saves/test1"/>
+        <Parameter Name="experiment.save.agentdirectory" Value="saves/test1"/>
+        <Parameter Name="experiment.temp.thing" Value="saves/test1"/>
+        <Parameter Name="environment.model.class" Value="edu.cwru.sepia.environment.model.BestEffortModel"/>
 	</Runner>
 </Configuration>
