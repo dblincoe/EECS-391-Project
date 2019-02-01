@@ -92,6 +92,7 @@ public class MyCombatAgent extends Agent
                 // attack the first enemy unit in the list
                 int unitID = feedback.getAction().getUnitId();
                 actions.put(unitID, Action.createCompoundAttack(unitID, enemyUnitIDs.get(0)));
+	            System.out.println(newstate.getUnitIds(enemyPlayerNum));
             }
         }
         return actions;

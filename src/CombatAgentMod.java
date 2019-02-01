@@ -95,7 +95,7 @@ public class CombatAgentMod extends Agent
 			    //attacks the first enemy in the list
 			    for(Integer enemyUnitID : enemyUnitIDs)
 			    {
-				    if(stateView.getUnit(enemyUnitID).equals("Footman"))
+				    if(enemyUnitIDs.contains("Footman"))
 				    {
 					    actions.put(unitID, Action.createCompoundAttack(unitID, enemyUnitID));
 				    }
