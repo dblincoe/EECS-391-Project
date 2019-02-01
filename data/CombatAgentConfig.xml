@@ -2,7 +2,7 @@
 	<Map>data/Combat.xml</Map>
 	<Player Id="1">
 		<AgentClass>
-            <ClassName>MyCombatAgent</ClassName>
+			<ClassName>CombatAgentMod</ClassName>
 			<Argument>0</Argument>
 		</AgentClass>
 	</Player>
