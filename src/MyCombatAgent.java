@@ -1,10 +1,15 @@
-import edu.cwru.sepia.action.*;
+import edu.cwru.sepia.action.Action;
+import edu.cwru.sepia.action.ActionFeedback;
+import edu.cwru.sepia.action.ActionResult;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MyCombatAgent extends Agent
 {
@@ -73,10 +78,10 @@ public class MyCombatAgent extends Agent
             // Nothing to do because there is no one left to attack
             return actions;
         }
-        
-        int currentStep = newstate.getTurnNumber();
-    
-        // go through the action history
+	
+	    int currentStep = newstate.getTurnNumber();
+	
+	    // go through the action history
         for (ActionResult feedback : statehistory.getCommandFeedback(playernum, currentStep - 1).values())
         {
         

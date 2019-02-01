@@ -1,10 +1,17 @@
-import edu.cwru.sepia.action.*;
+import edu.cwru.sepia.action.Action;
+import edu.cwru.sepia.action.ActionFeedback;
+import edu.cwru.sepia.action.ActionResult;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
-import edu.cwru.sepia.environment.model.state.*;
+import edu.cwru.sepia.environment.model.state.State;
+import edu.cwru.sepia.environment.model.state.Unit;
 
-import java.io.*;
-import java.util.*;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CombatAgentMod extends Agent
 {
@@ -74,7 +81,32 @@ public class CombatAgentMod extends Agent
                 ballistaIDs.add(unitID);
             }
         }
-        
+	
+	    List<Unit.UnitView> units = stateView.getUnits(enemyPlayerNum);
+	
+	    // go through the action history
+	    for(ActionResult feedback : historyView.getCommandFeedback(playernum, currentStep - 1).values())
+	    {
+		    // if the previous action is no longer in progress (either due to failure or completion)
+		    // then add a new action for this unit
+		    if(feedback.getFeedback() != ActionFeedback.INCOMPLETE)
+		    {
+			    int unitID = feedback.getAction().getUnitId();
+			    //check if the
+			    for(Unit.UnitView unit : units)
+			    {
+				    if(unit.equals("Footman"))
+				    {
+					    actions.put(unitID, Action.createCompoundAttack(unitID, unit.getID()));
+				    }
+				    else
+				    {
+					    actions.put(unitID, Action.createCompoundAttack(unitID, enemyUnitIDs.get(0)));
+				    }
+			    }
+		    }
+	    }
+        /*
         //This for loop gives the footmen an action
         for (Integer footmanID : footmanIDs)
         {
@@ -90,26 +122,55 @@ public class CombatAgentMod extends Agent
                 }
             }
         }
+	    
+        List<Integer> templateIDs = stateView.getAllTemplateIds();
         
         //This for loop gives the archers an action
         for (Integer archerID : archerIDs)
         {
-        
+        	for(Integer templateID: templateIDs)
+	        {
+	        	if(stateView.hasUnit(enemyPlayerNum, templateID))
+		        {
+		        	actions.put(archerID, Action.createCompoundAttack(archerID, enemyUnitIDs.get(templateID)));
+		        }
+	        }
         }
         
         //This for loop gives the towers an action
         for (Integer towerID : towerIDs)
         {
-        
+	        for(Integer templateID : templateIDs)
+	        {
+		        if(stateView.hasUnit(enemyPlayerNum, templateID))
+		        {
+			        actions.put(towerID, Action.createCompoundAttack(towerID, enemyUnitIDs.get(templateID)));
+		        }
+		        else
+		        {
+			        actions.put(towerID, Action.createCompoundAttack(towerID, enemyUnitIDs.get(0)));
+		        }
+	        }
         }
         
         //This for loop gives the ballista an action
         for (Integer ballistaID : ballistaIDs)
         {
-        
+	        for(Integer templateID : templateIDs)
+	        {
+		        if(stateView.hasUnit(enemyPlayerNum, templateID))
+		        {
+			        actions.put(ballistaID, Action.createCompoundAttack(ballistaID, enemyUnitIDs.get(templateID)));
+		        }
+		        else
+		        {
+		        	actions.put(ballistaID, Action.createCompoundAttack(ballistaID, enemyUnitIDs.get(0)));
+		        }
+	        }
         }
-        
-        return null;
+        */
+	
+	    return actions;
     }
     
     @Override
