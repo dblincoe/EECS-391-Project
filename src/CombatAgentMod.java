@@ -82,8 +82,6 @@ public class CombatAgentMod extends Agent
             }
         }
 	
-	    List<Unit.UnitView> units = stateView.getUnits(enemyPlayerNum);
-	
 	    // go through the action history
 	    for(ActionResult feedback : historyView.getCommandFeedback(playernum, currentStep - 1).values())
 	    {
@@ -92,12 +90,14 @@ public class CombatAgentMod extends Agent
 		    if(feedback.getFeedback() != ActionFeedback.INCOMPLETE)
 		    {
 			    int unitID = feedback.getAction().getUnitId();
-			    //check if the
-			    for(Unit.UnitView unit : units)
+			    //check if the enemy unit is a footman
+			    //if it is, the player's unit attacks the footman, otherwise it
+			    //attacks the first enemy in the list
+			    for(Integer enemyUnitID : enemyUnitIDs)
 			    {
-				    if(unit.equals("Footman"))
+				    if(stateView.getUnit(enemyUnitID).equals("Footman"))
 				    {
-					    actions.put(unitID, Action.createCompoundAttack(unitID, unit.getID()));
+					    actions.put(unitID, Action.createCompoundAttack(unitID, enemyUnitID));
 				    }
 				    else
 				    {
