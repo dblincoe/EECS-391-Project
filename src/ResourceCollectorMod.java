@@ -1,6 +1,7 @@
 import edu.cwru.sepia.action.*;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
+import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
 import edu.cwru.sepia.environment.model.state.*;
 import edu.cwru.sepia.environment.model.state.State.StateView;
@@ -17,13 +18,13 @@ public class ResourceCollectorMod extends Agent
     }
     
     @Override
-    public Map<Integer, Action> initialStep(StateView stateView, History.HistoryView historyView)
+    public Map<Integer, Action> initialStep(StateView stateView, HistoryView historyView)
     {
         return middleStep(stateView, historyView);
     }
     
     @Override
-    public Map<Integer, Action> middleStep(StateView stateView, History.HistoryView historyView)
+    public Map<Integer, Action> middleStep(StateView stateView, HistoryView historyView)
     {
         // This stores the action that each unit will perform
         // if there are no changes to the current actions then this
@@ -40,9 +41,8 @@ public class ResourceCollectorMod extends Agent
         List<Integer> farmId = new ArrayList<Integer>();
         List<Integer> barracksId = new ArrayList<Integer>();
         List<Integer> footmanIds = new ArrayList<Integer>();
-        
-        // This loop will examine each of our unit IDs and classify them as either
-        // a Townhall or a Peasant
+    
+        // examine each of our unit IDs and classify them as either a Townhall or a Peasant
         for (Integer unitID : myUnitIds)
         {
             // UnitViews extract information about a specified unit id from the current state.

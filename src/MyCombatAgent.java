@@ -1,15 +1,10 @@
-import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.action.ActionFeedback;
-import edu.cwru.sepia.action.ActionResult;
+import edu.cwru.sepia.action.*;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.State.StateView;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class MyCombatAgent extends Agent
 {
@@ -44,11 +39,11 @@ public class MyCombatAgent extends Agent
         
         // This is a list of enemy units
         List<Integer> enemyUnitIDs = newstate.getUnitIds(enemyPlayerNum);
-	
-	    if(enemyUnitIDs.size() == 0)
-	    {
-		    // Nothing to do because there is no one left to attack
-		    return actions;
+    
+        if (enemyUnitIDs.size() == 0)
+        {
+            // Nothing to do because there is no one left to attack
+            return actions;
         }
         
         // start by commanding every single unit to attack an enemy unit
@@ -80,15 +75,15 @@ public class MyCombatAgent extends Agent
         }
         
         int currentStep = newstate.getTurnNumber();
-	
-	    // go through the action history
-	    for(ActionResult feedback : statehistory.getCommandFeedback(playernum, currentStep - 1).values())
-	    {
-		
-		    // if the previous action is no longer in progress (either due to failure or completion)
-		    // then add a new action for this unit
-		    if(feedback.getFeedback() != ActionFeedback.INCOMPLETE)
-		    {
+    
+        // go through the action history
+        for (ActionResult feedback : statehistory.getCommandFeedback(playernum, currentStep - 1).values())
+        {
+        
+            // if the previous action is no longer in progress (either due to failure or completion)
+            // then add a new action for this unit
+            if (feedback.getFeedback() != ActionFeedback.INCOMPLETE)
+            {
                 // attack the first enemy unit in the list
                 int unitID = feedback.getAction().getUnitId();
                 actions.put(unitID, Action.createCompoundAttack(unitID, enemyUnitIDs.get(0)));
