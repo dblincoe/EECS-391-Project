@@ -7,7 +7,6 @@ import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import java.io.*;
 import java.util.*;
 
-@SuppressWarnings("WeakerAccess")
 public class CombatAgentMod extends Agent
 {
     private int enemyPlayerNum = 1;

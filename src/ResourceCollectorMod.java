@@ -10,7 +10,6 @@ import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 import java.io.*;
 import java.util.*;
 
-@SuppressWarnings("WeakerAccess")
 public class ResourceCollectorMod extends Agent
 {
     public ResourceCollectorMod(int playernum)
