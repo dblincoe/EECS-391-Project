@@ -1,22 +1,16 @@
-import edu.cwru.sepia.action.Action;
-import edu.cwru.sepia.action.ActionType;
-import edu.cwru.sepia.action.TargetedAction;
+import edu.cwru.sepia.action.*;
 import edu.cwru.sepia.agent.Agent;
 import edu.cwru.sepia.environment.model.history.History;
 import edu.cwru.sepia.environment.model.history.History.HistoryView;
 import edu.cwru.sepia.environment.model.state.ResourceNode.Type;
-import edu.cwru.sepia.environment.model.state.ResourceType;
+import edu.cwru.sepia.environment.model.state.*;
 import edu.cwru.sepia.environment.model.state.State.StateView;
-import edu.cwru.sepia.environment.model.state.Template;
 import edu.cwru.sepia.environment.model.state.Unit.UnitView;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
+@SuppressWarnings("WeakerAccess")
 public class ResourceCollectorMod extends Agent
 {
     public ResourceCollectorMod(int playernum)
@@ -36,19 +30,19 @@ public class ResourceCollectorMod extends Agent
         // This stores the action that each unit will perform
         // if there are no changes to the current actions then this
         // map will be empty.
-        Map<Integer, Action> actions = new HashMap<Integer, Action>();
+        Map<Integer, Action> actions = new HashMap<>();
         
         // this will return a list of all of your units
         // You will need to check each unit ID to determine the unit's type
         List<Integer> myUnitIds = stateView.getUnitIds(playernum);
         
         // These will store the Unit IDs that are peasants and townhalls respectively
-        List<Integer> peasantIds = new ArrayList<Integer>();
-        List<Integer> townhallIds = new ArrayList<Integer>();
-        List<Integer> farmId = new ArrayList<Integer>();
-        List<Integer> barracksId = new ArrayList<Integer>();
-        List<Integer> footmanIds = new ArrayList<Integer>();
-    
+        List<Integer> peasantIds = new ArrayList<>();
+        List<Integer> townhallIds = new ArrayList<>();
+        List<Integer> farmId = new ArrayList<>();
+        List<Integer> barracksId = new ArrayList<>();
+        List<Integer> footmanIds = new ArrayList<>();
+        
         // examine each of our unit IDs and classify them as either a Townhall or a Peasant
         for (Integer unitID : myUnitIds)
         {
@@ -95,7 +89,7 @@ public class ResourceCollectorMod extends Agent
         // Now that we know the unit types we can assign our peasants to collect resources
         for (Integer peasantID : peasantIds)
         {
-            Action action = null;
+            Action action;
             if (stateView.getUnit(peasantID).getCargoAmount() > 0)
             {
                 // If the agent is carrying cargo then command it to deposit what its carrying at the townhall.
@@ -114,7 +108,7 @@ public class ResourceCollectorMod extends Agent
                     action = new TargetedAction(peasantID, ActionType.COMPOUNDGATHER, trees.get(0));
                 }
             }
-    
+            
             // Put the actions in the action map.
             // Without this step your agent will do nothing.
             actions.put(peasantID, action);
@@ -126,10 +120,10 @@ public class ResourceCollectorMod extends Agent
             // Get the farms template's unique ID
             Template.TemplateView farmTemplate = stateView.getTemplate(playernum, "Farm");
             int farmTemplateID = farmTemplate.getID();
-    
+            
             // Get the id of the first peasant so they can build the farm
             int peasantID = peasantIds.get(0);
-    
+            
             // create a new CompoundBuild action for peasant 0 to build the farm
             actions.put(peasantID, Action.createCompoundBuild(peasantID, farmTemplateID, 10, 10));
         }
@@ -138,10 +132,10 @@ public class ResourceCollectorMod extends Agent
             // Get the barracks template's unique ID
             Template.TemplateView barracksTemplate = stateView.getTemplate(playernum, "Barracks");
             int barracksTemplateID = barracksTemplate.getID();
-    
+            
             // Get the id of the first peasant so they can build the barracks
             int peasantID = peasantIds.get(0);
-    
+            
             // create a new CompoundBuild action for peasant 0 to build the barracks
             actions.put(peasantID, Action.createCompoundBuild(peasantID, barracksTemplateID, 5, 5));
         }
@@ -150,10 +144,10 @@ public class ResourceCollectorMod extends Agent
             // Get the footman template's unique ID
             Template.TemplateView footmanTemplate = stateView.getTemplate(playernum, "Footman");
             int footmanTemplateID = footmanTemplate.getID();
-    
+            
             // Get the id of the barracks
             int barrackID = barracksId.get(0);
-    
+            
             // create a new CompoundProduction action at the barracks. A footman will be built at the barracks
             actions.put(barrackID, Action.createCompoundProduction(barrackID, footmanTemplateID));
         }
