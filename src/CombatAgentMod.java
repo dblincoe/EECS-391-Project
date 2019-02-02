@@ -88,6 +88,16 @@ public class CombatAgentMod extends Agent
             actions.put(id, Action.createCompoundAttack(id, towerId));
         }
         
+        /*for (int unitID : pArchers)
+        {
+	        actions.put(unitID, Action.createPrimitiveAttack(unitID, 0));
+        }
+	
+	    for (int unitID : pBallistas)
+	    {
+		    actions.put(unitID, Action.createPrimitiveAttack(unitID, 0));
+	    }*/
+        
         return actions;
     }
     
@@ -96,6 +106,7 @@ public class CombatAgentMod extends Agent
     {
         // This is a list of enemy units
         List<Integer> enemyUnitIDs = stateView.getUnitIds(enemyPlayerNum);
+	    List<Integer> unitIDs = stateView.getUnitIds(playernum);
     
         // stores unit actions
         Map<Integer, Action> actions = new HashMap<>();
@@ -116,55 +127,24 @@ public class CombatAgentMod extends Agent
                 eFootmen.add(id);
             }
         }
-        eFootmen.sort(Comparator.comparingInt(o -> stateView.getUnit(o).getTemplateView().getBaseHealth()));
-    
-        List<Integer> pFootmen = new ArrayList<>();
-        List<Integer> pArchers = new ArrayList<>();
-        List<Integer> pBallistas = new ArrayList<>();
+	
+	    List<Integer> pFootmen = new ArrayList<>();
+	    for (Integer id : unitIDs)
+	    {
+		    if (stateView.getUnit(id).getTemplateView().getName().equals("Footman"))
+		    {
+			    pFootmen.add(id);
+		    }
+	    }
         
-        //go through action history
-        for (ActionResult feedback : historyView.getCommandFeedback(playernum, currentStep - 1).values())
+        if (pFootmen.size() < 3)
         {
-            // if the previous action is no longer in progress (either due to failure or completion), assign a new one
-            if (feedback.getFeedback() != ActionFeedback.INCOMPLETE)
-            {
-                int unitID = feedback.getAction().getUnitId();
-                String unitType = stateView.getUnit(unitID).getTemplateView().getName();
-                if (unitType.equals("Archer"))
-                {
-                    pArchers.add(unitID);
-                }
-                else if (unitType.equals("Footman"))
-                {
-                    pFootmen.add(unitID);
-                }
-                else
-                {
-                    pBallistas.add(unitID);
-                }
-            }
+        	for (Integer id : unitIDs)
+	        {
+		        actions.put(id, Action.createCompoundAttack(id, eFootmen.get(0)));
+	        }
         }
-    
-        int i = 0;
-    
-        if (!pFootmen.isEmpty())
-        {
-            int id = pFootmen.remove(0);
-            actions.put(id, Action.createCompoundAttack(id, eFootmen.get(0)));
-        }
-    
-        while (!pBallistas.isEmpty())
-        {
-            int id = pBallistas.remove(0);
-            actions.put(id, Action.createCompoundAttack(id, eFootmen.get(0)));
-        }
-    
-        while (!pArchers.isEmpty())
-        {
-            int id = pArchers.remove(0);
-            actions.put(id, Action.createCompoundAttack(id, eFootmen.get(0)));
-        }
-    
+        
         return actions;
     }
     
