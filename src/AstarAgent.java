@@ -28,7 +28,12 @@ public class AstarAgent extends Agent {
         
         public int heuristic(MapLocation goal){
             int dist = Math.max(Math.abs(this.x - goal.x), Math.abs(this.y - goal.y));
-            return dist + this.cost;
+            return (int)(dist + this.cost);
+        }
+        
+        public boolean sameLocation(MapLocation location)
+        {
+            return (this.x == location.x) && (this.y == location.y);
         }
     }
 
@@ -312,10 +317,84 @@ public class AstarAgent extends Agent {
      */
     private Stack<MapLocation> AstarSearch(MapLocation start, MapLocation goal, int xExtent, int yExtent, MapLocation enemyFootmanLoc, Set<MapLocation> resourceLocations)
     {
-        // return an empty path
+        Stack<MapLocation> openList = new Stack<>();
+        Stack<MapLocation> closedList = new Stack<>();
+    
+        Stack<MapLocation> path = new Stack<>();
+        
+        openList.push(start);
+        
+        while (!openList.empty())
+        {
+            // This determines the next state on the open list to choose
+            MapLocation currentState = openList.peek();
+            int optimalCost = currentState.heuristic(goal);
+            for(MapLocation possibleState : openList) {
+                int possibleOptimalState = possibleState.heuristic(goal);
+                if (possibleOptimalState < optimalCost)
+                {
+                    currentState = possibleState;
+                    optimalCost = possibleOptimalState;
+                }
+            }
+            
+            // Remove the next best state from the queue
+            openList.remove(currentState);
+            
+            // Return path if the current state is at the same location as the goal
+            if (currentState.sameLocation(goal)){
+                return path;
+            }
+            
+            // Get all neighbor nodes
+            int xMin = Math.max(0, currentState.x - 1);
+            int xMax = Math.min(currentState.x + 1, xExtent - 1);
+            for (int xLoc = xMin; xLoc < xMax; xLoc++)
+            {
+                int yMin = Math.max(0, currentState.y - 1);
+                int yMax = Math.min(currentState.y + 1, yExtent - 1);
+                for (int yLoc = yMin; yLoc < yMax; yLoc++)
+                {
+                    MapLocation neighbor = new MapLocation(xLoc, yLoc,currentState, currentState.cost + 1);
+                    if(neighbor.equals(currentState))
+                        continue;
+                    
+                    // Check if next state is blocked
+                    for(MapLocation resource: resourceLocations)
+                    {
+                        if (neighbor.equals(resource))
+                            continue;
+                    }
+                    
+                    if (neighbor.equals(goal))
+                    {
+                        MapLocation previousState = neighbor.cameFrom;
+                        while (previousState.cameFrom != null)
+                        {
+                            path.push(previousState);
+                            previousState = previousState.cameFrom;
+                        }
+                        return path;
+                    }
+                    else
+                    {
+                        for (MapLocation state : closedList)
+                        {
+                            if (state.equals(neighbor))
+                            {
+                                continue;
+                            }
+                        }
+                        openList.push(neighbor);
+                    }
+                }
+                closedList.push(currentState);
+            }
+            
+        }
+        
         return new Stack<MapLocation>();
     }
-
     /**
      * Primitive actions take a direction (e.g. Direction.NORTH, Direction.NORTHEAST, etc)
      * This converts the difference between the current position and the
