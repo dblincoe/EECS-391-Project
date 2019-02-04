@@ -341,11 +341,6 @@ public class AstarAgent extends Agent {
             // Remove the next best state from the queue
             openList.remove(currentState);
             
-            // Return path if the current state is at the same location as the goal
-            if (currentState.sameLocation(goal)){
-                return path;
-            }
-            
             // Get all neighbor nodes
             int xMin = Math.max(0, currentState.x - 1);
             int xMax = Math.min(currentState.x + 1, xExtent - 1);
@@ -358,16 +353,9 @@ public class AstarAgent extends Agent {
                     MapLocation neighbor = new MapLocation(xLoc, yLoc,currentState, currentState.cost + 1);
                     if(neighbor.equals(currentState))
                         continue;
-                    
-                    // Check if next state is blocked
-                    for(MapLocation resource: resourceLocations)
-                    {
-                        if (neighbor.equals(resource))
-                            continue;
-                    }
-                    
-                    if (neighbor.equals(goal))
-                    {
+    
+                    // Return path if the current state is at the same location as the goal
+                    if (neighbor.sameLocation(goal)){
                         MapLocation previousState = neighbor.cameFrom;
                         while (previousState.cameFrom != null)
                         {
@@ -376,25 +364,24 @@ public class AstarAgent extends Agent {
                         }
                         return path;
                     }
-                    else
+                    
+                    // Check if next state is blocked
+                    for(MapLocation resource: resourceLocations)
                     {
-                        for (MapLocation state : closedList)
-                        {
-                            if (state.equals(neighbor))
-                            {
-                                continue;
-                            }
-                        }
-                        openList.push(neighbor);
+                        if (neighbor.sameLocation(resource))
+                            continue;
                     }
+                    
+                    openList.push(neighbor);
                 }
-                closedList.push(currentState);
             }
             
+            closedList.push(currentState);
         }
         
         return new Stack<MapLocation>();
     }
+    
     /**
      * Primitive actions take a direction (e.g. Direction.NORTH, Direction.NORTHEAST, etc)
      * This converts the difference between the current position and the
